@@ -1,0 +1,197 @@
+Program to test QR encoding and decoding:
+% please download and build the core and javase parts of zxing
+% from here – http://code.google.com/p/zxing/
+% javaaddpath(‘\3
+rd_party\zxing-1.6\core\core.jar’); 
+% javaaddpath(‘\3
+rd_party\zxing-1.6\javase\javase.jar’); 
+close all;
+clear all;
+javaaddpath(‘C:\Program File\zxing\core\core.jar’);
+javaaddpath(‘C:\Program File\zxing\javase\javase.jar’);
+% encode a new QR code
+colord _corners = 1;%0 if standard black alignment 
+bw_code = 0; %encode all three channels with all of data
+m=’test. whats up tom’;
+test_encode= ~(encode_qr_3c(m,[256 256], colored_corners,bw_code));
+test_encode=double(test_encode);
+figure;
+imshow(test_encode,’InitialMagnification’,fit’);
+% decode
+message=decode_qr_3c(test_encode);
+imout=test_encode;
+%imout=imresize(test_encode,8,’nearest’);
+Program to create QR, QLR codes:
+functionqr=encode_qr_3c(m,s,colored_corners,bw_codes)
+
+% ENCODE_QR create a 2D QR code containing a message
+% This function creates a QR code containing a string message. The QR code can be 
+varying sizes.
+% Note that this function requires zxing (http://code.google.com/p/zxing/)
+% installed, and core/core.jar, javase/javase.jar on the classpath
+Parameters:
+% message – string containing message
+% s – width and height of the QR code
+% qr – logical matrix of size s containing the QR code
+Importcom.google.zxing.qrcode.QRCodeWriter
+Importcom.google.zxing.BarcodeFormat
+If(bw_code)
+% encodeing qr
+qr_write=QRCodeWriter;
+M_java=qr_writer.encode(m,BarcodeFormat.QR_CODE, s(2),s(1));
+qr_temp=zeros(M_java.getHeight(),M_java.getWidth());
+for i=1:M_java.getHeight()
+for j=1:M_java.getWidth()
+qr_temp(I,j)=M_java.get(j-1,i-1);
+end
+end
+clearqr_writer;
+clearM_java;
+ QUICK LAYERED RESPONSE USING MATLAB
+qr=logical(zeros([sizeof(qr_temp)3]));
+qr(:;:;1)=qr_temp;
+qr(:;:;2)=qr_temp;
+qr(:;:;3)=qr_temp;
+else
+qr=logical(zeros(s(2),s(1),3));
+m_arr=cell(3);
+m_arr{1}=m(1:round(length(m)/3));
+m_arr{2}=m(1:round(length(m)/3)+1:round(2*length(m)/3));
+m_arr{3}=m(around(2*length(m)/3)+1:end);
+for ii=1:3
+message=m_arr{ii};
+%encoding qr
+qr_writer=QRCodeWriter;
+M_java=qr_writer.encode(message,BarcodeFormat.QR_CODE,s(2),s(1));
+qr_tmp=zeros(M_java.getHeight(),M_java.getWidth());
+for i=1:M_java.getHeight()
+for j=1:M_java.getWidth()
+qr_temp(i,j)=M_java.get(j-1,i-1);
+end 
+end
+clearqr_writer;
+clearM_java;
+37
+DEPARTMENT OF ECE, KITS
+ QUICK LAYERED RESPONSE USING MATLAB
+38
+DEPARTMENT OF ECE, KITS
+if(size(qr(i;i;ii))~=size(logical(qr_tem)))
+fprintf(‘ERROR:message too long\n’);
+qr=logical(zeros(s(2),s(1),3));
+return;
+end
+qr(i;i;ii)=logical(qr_tmp);
+end
+end
+if(colored_corners)
+ii=1;
+while(qr(ii,ii,1)==0)
+ii=ii+1;
+end
+while(qr(ii,ii,1)==1)
+ii=ii+1;
+end
+while(qr(ii,ii,1)==0)
+ii=ii+1;
+end
+box1=ii;
+while(qr(ii,ii,1)==1)
+ii=ii+1;
+end
+
+box2=ii-1;
+qr(box1:box2,box1:box2,1)=0;
+qr(box1:box2,box1:box2,2)=1;
+qr(box1:box2,box1:box2,3)=1;
+box_dim=box2-box1;
+ii=size(qr,2);
+jj=1;
+while(qr(jj,ii,1)==0)
+ii=ii-1;
+jj=jj+1;
+end
+while(qr(jj,ii,1)==1)
+ii=ii-1;
+jj=jj+1;
+end
+while(qr(jj,ii,1)==0)
+ii=ii-1;
+jj=jj+1;
+end
+while(qr(jj,ii,1)==1)
+jj=jj-1;
+end
+jj=jj+1;
+ QUICK LAYERED RESPONSE USING MATLAB
+while(qr(jj,ii,1)==1)
+ii=ii-1;
+end
+ii=ii+1;
+jjcoords=jj+(0:box_dim);
+iicoords=ii+(0/;box_dim);
+qr(jjcoords,iicoords,1)=1;
+qr(jjcoords,iicoords,2)=0;
+qr(jjcoords,iicoords,3)=1;
+ii=1;
+jj=size(qr,1);
+while(qr(jj,ii,1)==0)
+ii=ii+1;
+jj=jj-1;
+end
+while(qr(jj,ii,1)==1)
+ii=ii+1;
+jj=jj-1;
+end
+while(qr(jj,ii,1)==0)
+ii=ii+1;
+jj=jj-1;
+end
+
+while(qr(jj,ii,1)==1)
+jj=jj-1;
+end
+jj=jj+1;
+while(qr(jj,ii,1)==1)
+ii=ii+1;
+end
+ii=ii+1;
+jjcoords=jj+(0:box_dim);
+iicoords=ii+(0:box_dim);
+qr(jjcoords,iicoords,1)=1;
+qr(jjcoords,iicoords,2)=1;
+qr(jjcoords,iicoords,3)=0;
+end
+Program to decode the QR, QLR codes:
+function message =decode_qr(img)
+% DECODE QR Finds QR code and the message embedded
+% given an image, locates a QR code embedded in the image, and extracts the 
+% string message embedded within. With slight modification this code can
+% extract the structural information (see commented out ResultParser lines)
+% note that this function requires zxing (http://code.google.com/p/zxing/)
+% installed, and core/core.jar,javase.jar on the classpath
+% Parameters:
+
+% img - image containing QR code
+% Returns:
+% message – embedded message (or empty string if QR code not found)
+importcom.google.zxing.qrcode.QRCodeReader
+importcom.google.zxing.client.j2se.BufferedImageLuminanceSource 
+importcom.google.zxing.BinaryBitmap
+importcom.google.zxing.common.HybridBinarizer
+importcom.google.zxing.Result
+importcom.google.zxing.client.result.ResultParser;
+jimg=im2java2d(img);
+source=BufferedImageLuminanceSource(jimg);
+bitmap=BinaryBitap(HybridBinarizer(source));
+qr_reader=QRCodeReader;
+try
+result=qr_reader.decode(bitmap);
+% parsedResult=ResultParser.parseResult(result);
+message=char(result.getText());
+catch e
+message=[]
+end
+clear source;
+clearjimg;
+clear bitmap;
